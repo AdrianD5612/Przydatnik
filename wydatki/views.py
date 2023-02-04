@@ -17,15 +17,15 @@ def index(request):
         budget_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
         expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
         fig,ax=plt.subplots()
-        ax.bar(['Expenses','Budget'], [abs(expense_total['expenses']),budget_total['budget']],color=['red','green'])
-        ax.set_title('Your total expenses vs total budget')
+        ax.bar(['Wydatki','Budżet'], [abs(expense_total['expenses']),budget_total['budget']],color=['red','green'])
+        ax.set_title('Suma wydatków i budżet')
         plt.savefig('wydatki/static/wydatki/expense.jpg')
     except TypeError:
-        print('No data.')
+        print('Brak danych.')
     if expense_total['expenses']:
-        context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':abs(expense_total['expenses'])}
+        context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':abs(expense_total['expenses']), 'remaining':(budget_total['budget']-abs(expense_total['expenses']))}
     else:   #naprawia błąd w przypadku braku wpisów
-        context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses'])}
+        context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':(budget_total['budget']-expense_total['expenses'])}
     return render(request,'wydatki/index.html',context=context)
 
 def add_item(request):
@@ -37,10 +37,10 @@ def add_item(request):
     expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
     fig,ax=plt.subplots()
     if expense_total['expenses']:
-        ax.bar(['Expenses','Budget'], [abs(expense_total['expenses']),budget_total['budget']],color=['red','green'])
+        ax.bar(['Wydatki','Budżet'], [abs(expense_total['expenses']),budget_total['budget']],color=['red','green'])
     else:
-        ax.bar(['Expenses','Budget'], [expense_total['expenses'],budget_total['budget']],color=['red','green'])
-    ax.set_title('Your total expenses vs. total budget')
+        ax.bar(['Wydatki','Budżet'], [expense_total['expenses'],budget_total['budget']],color=['red','green'])
+    ax.set_title('Suma wydatków i budżet')
     plt.savefig('wydatki/static/wydatki/expense.jpg')
     return HttpResponseRedirect('app')
 
@@ -61,7 +61,7 @@ def sign_up(request):
         else:
             for msg in form.error_messages:
                 print(form.error_messages[msg])
-                errors+=msg
+                errors+=form.error_messages[msg]
             return render(request, 'wydatki/error.html', {
             'error_message': errors ,
              })

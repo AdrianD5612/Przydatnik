@@ -13,5 +13,5 @@
         <p>Nie ma ankiet.</p>
     {% endif %}
 {% else %}
-<a href="{% url 'admin:index' %}">Najpierw się zaloguj!</a>
+<a href='{% url "login" %}'>Najpierw się zaloguj!</a>
 {% endif %}
