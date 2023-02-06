@@ -5,9 +5,13 @@
         {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
         {% for choice in question.choice_set.all %}
             <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-            <label for="choice{{ forloop.counter }}">{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</label><br>
+            {% if choice.votes %}
+                <label for="choice{{ forloop.counter }}" style="background-color:#FF0000"><b>{{ choice.choice_text }}--Wybrano!</b></label><br>
+            {% else %}
+            <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+            {% endif %}
         {% endfor %}
     </fieldset>
-    <input type="submit" value="Zagłosuj">
+    <input type="submit" value="Zatwiedź wybór">
     </form>
     <li><a href="..">Powrót</a></li>

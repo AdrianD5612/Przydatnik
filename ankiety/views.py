@@ -46,7 +46,7 @@ def vote(request, question_id):
             'error_message': "Nic nie wybrałeś.",
         })
     else:
-        selected_choice.votes += 1
+        selected_choice.votes = True
         selected_choice.save()
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a

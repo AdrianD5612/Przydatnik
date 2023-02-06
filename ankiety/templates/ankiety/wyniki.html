@@ -2,8 +2,12 @@
 
 <ul>
 {% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
+    {% if choice.votes %}
+       <li style="background-color:#FF0000"> <b>{{ choice.choice_text }}--Wybrano!</b></li>
+    {% else %}
+        <li>{{ choice.choice_text }}</li>
+    {% endif %}
 {% endfor %}
 </ul>
 
-<a href="{% url 'ankiety:detail' question.id %}">Zagłosować od nowa?</a>
+<a href="{% url 'ankiety:detail' question.id %}">Zmienić głos?</a>
