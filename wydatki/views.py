@@ -25,7 +25,7 @@ def index(request):
     if expense_total['expenses']:
         context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':abs(expense_total['expenses']), 'remaining':(budget_total['budget']-abs(expense_total['expenses']))}
     else:   #naprawia błąd w przypadku braku wpisów
-        context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':(budget_total['budget']-expense_total['expenses'])}
+        context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':0 }
     return render(request,'wydatki/index.html',context=context)
 
 def add_item(request):
