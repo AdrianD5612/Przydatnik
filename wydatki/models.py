@@ -20,3 +20,4 @@ class ExpenseInfo(models.Model):
     cost = models.FloatField()
     date_added = models.DateField()
     user_expense = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='images')

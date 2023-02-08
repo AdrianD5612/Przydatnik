@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect,HttpResponse
-from .models import ExpenseInfo
+from .models import ExpenseInfo  
 from django.contrib.auth import logout,login,authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -8,6 +8,7 @@ from django.db.models import Sum
 import matplotlib.pyplot as plt
 import numpy as np
 from django.db.models import Q
+from wydatki.forms import ExpenseDetails  
 # Create your views here.
 
 
@@ -26,24 +27,32 @@ def index(request):
         context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':abs(expense_total['expenses']), 'remaining':(budget_total['budget']-abs(expense_total['expenses']))}
     else:   #naprawia błąd w przypadku braku wpisów
         context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':0 }
+    context['form']= ExpenseDetails()
     return render(request,'wydatki/index.html',context=context)
 
 def add_item(request):
-    name = request.POST['expense_name']
-    expense_cost = request.POST['cost']
-    expense_date = request.POST['expense_date']
-    ExpenseInfo.objects.create(expense_name=name,cost=expense_cost,date_added=expense_date,user_expense=request.user)
-    budget_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
-    expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
-    fig,ax=plt.subplots()
-    if expense_total['expenses']:
-        ax.bar(['Wydatki','Budżet'], [abs(expense_total['expenses']),budget_total['budget']],color=['red','green'])
+    if request.method == 'POST':
+        form = ExpenseDetails(request.POST, request.FILES)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.user_expense = request.user #zanim formularz zostanie zapisany w bazie musi zawierać nazwę użytkownika
+            obj.save()
+        budget_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
+        expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
+        fig,ax=plt.subplots()
+        if expense_total['expenses']:
+            ax.bar(['Wydatki','Budżet'], [abs(expense_total['expenses']),budget_total['budget']],color=['red','green'])
+        else:
+            ax.bar(['Wydatki','Budżet'], 0,0,color=['red','green'])
+        ax.set_title('Suma wydatków i budżet')
+        plt.savefig('wydatki/static/wydatki/expense.jpg')
+        return HttpResponseRedirect('app')
     else:
-        ax.bar(['Wydatki','Budżet'], [expense_total['expenses'],budget_total['budget']],color=['red','green'])
-    ax.set_title('Suma wydatków i budżet')
-    plt.savefig('wydatki/static/wydatki/expense.jpg')
-    return HttpResponseRedirect('app')
-
+        form = ExpenseDetails()
+        context = {
+            'form': form
+        }
+    return render(request, 'upload_image.html', context)
 
 def logout_view(request):
     logout(request)
@@ -67,4 +76,4 @@ def sign_up(request):
              })
     else:
         form = UserCreationForm
-        return render(request,'wydatki/sign_up.html',{'form':form})
+        return render(request,'wydatki/sign_up.html',{'form':form}) 

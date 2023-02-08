@@ -4,7 +4,7 @@ from .models import *
 
 
 class ExpenseInfoAdmin(admin.ModelAdmin):
-    fields = ['expense_name', 'cost', 'date_added', 'user_expense']
+    fields = ['expense_name', 'cost', 'date_added', 'user_expense', 'image']
     list_display = ['expense_name', 'cost', 'date_added', 'user_expense']
 
 admin.site.register(ExpenseInfo, ExpenseInfoAdmin)
