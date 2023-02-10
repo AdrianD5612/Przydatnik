@@ -51,3 +51,5 @@ docs/_build/
 
 
 .env
+media
+db.sqlite3

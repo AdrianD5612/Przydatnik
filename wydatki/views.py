@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from django.db.models import Q
 from wydatki.forms import ExpenseDetails  
-# Create your views here.
+
 
 
 def index(request):

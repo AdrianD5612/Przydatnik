@@ -28,7 +28,7 @@
             <div class="row">
                                 <form class="col s12" action='{% url "add item" %}' method='post' enctype="multipart/form-data">
                                         {% csrf_token %}
-                                        {{ form.as_ul }}
+                                        {{ form.as_div }}
                                         <input type="submit" value="Dodaj wydatek">
                                 </form>   
             </div>
@@ -44,6 +44,7 @@
                                     <th>Nazwa</th>
                                     <th>Kwota</th>
                                     <th>Data</th>
+                                    <th>Obrazek</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -54,6 +55,7 @@
                                     <td>{{ expense_item.expense_name }}</td>
                                     <td>{{ expense_item.cost }}</td>
                                     <td>{{ expense_item.date_added}}</td>
+                                    <td><a href="{{ expense_item.image.url }} " target="_blank">Otwórz</a></td>
                                     <td></td>
                                 </tr>
                                 {% endfor %}
