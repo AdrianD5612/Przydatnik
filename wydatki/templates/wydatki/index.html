@@ -55,7 +55,7 @@
                                     <td>{{ expense_item.expense_name }}</td>
                                     <td>{{ expense_item.cost }}</td>
                                     <td>{{ expense_item.date_added}}</td>
-                                    <td><a href="{{ expense_item.image.url }} " target="_blank">Otwórz</a></td>
+                                    <td><button id="clickme" onclick='changeImage( "{{ expense_item.image.url }}" );'>Wyświetl</button></td>
                                     <td></td>
                                 </tr>
                                 {% endfor %}
@@ -63,14 +63,18 @@
                         </table>
                     </div>
                     <div class="col s6">
+                        <img class='responsive-img' src= "" id="imagee">
                         <img class='responsive-img' src= "{% static 'wydatki/expense.jpg' %}">
                     </div>
                 </div>
+            </div>
         </div>
-
-            
-        </div>
-
+        <script type="text/javascript">
+            function changeImage(a)
+            {
+                document.getElementById("imagee").src=a;
+            }
+        </script>
 
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
