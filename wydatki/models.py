@@ -16,8 +16,8 @@ class AccountInfo(models.Model):
         return self.username
 
 class ExpenseInfo(models.Model):
-    expense_name = models.CharField(max_length=20)
-    cost = models.FloatField()
+    expense_name = models.CharField(max_length=100)
+    cost = models.DecimalField(max_digits=5, decimal_places=2)
     date_added = models.DateField()
     user_expense = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='images')
