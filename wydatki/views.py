@@ -42,7 +42,7 @@ def add_item(request):
         expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
         fig,ax=plt.subplots()
         if expense_total['expenses']:
-            ax.bar(['Wydatki','Budżet'], [abs(expense_total['expenses']),budget_total['budget']],color=['red','green'])
+            ax.bar(['Wydatki','Budżet'], [math.ceil(abs(expense_total['expenses'])),math.ceil(budget_total['budget'])],color=['red','green'])
         else:
             ax.bar(['Wydatki','Budżet'], 0,0,color=['red','green'])
         ax.set_title('Suma wydatków i budżet')
