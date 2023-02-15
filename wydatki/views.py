@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from django.db.models import Q
 from wydatki.forms import ExpenseDetails  
+import math
 
 
 
@@ -18,7 +19,7 @@ def index(request):
         budget_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
         expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
         fig,ax=plt.subplots()
-        ax.bar(['Wydatki','Budżet'], [abs(expense_total['expenses']),budget_total['budget']],color=['red','green'])
+        ax.bar(['Wydatki','Budżet'], [math.ceil(abs(expense_total['expenses'])),math.ceil(budget_total['budget'])],color=['red','green'])
         ax.set_title('Suma wydatków i budżet')
         plt.savefig('wydatki/static/wydatki/expense.jpg')
     except TypeError:

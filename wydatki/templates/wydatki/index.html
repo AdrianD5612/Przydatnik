@@ -26,6 +26,11 @@
         </nav>
         <br>
         <div>
+            <div class="container center">
+                <h3 class='center'>Twój całkowity budżet to: <span style="color:blue;">{{budget}}</span> złotych</h3>
+                <h3 clas='center'>Wydałeś w sumie : <span style="color:red;">{{expenses}}</span> złotych</h3>
+                <h3 clas='center'>Zostało : <span style="color:green;">{{remaining}}</span> złotych</h3>
+            </div>
                                 <form class="col s12" action='{% url "add item" %}' method='post' enctype="multipart/form-data">
                                         {% csrf_token %}
                                         {{ form.as_div }}
