@@ -9,8 +9,35 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Wydatki</title>
-        
-       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            /* Style the button that is used to open and close the collapsible content */
+            .collapsible {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+            }
+
+            /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+            .active, .collapsible:hover {
+              background-color: #ccc;
+            }
+
+            /* Style the collapsible content. Note: hidden by default */
+            .content {
+              padding: 0 18px;
+              display: none;
+              overflow: hidden;
+              background-color: #f1f1f1;
+            }
+        </style>
+       
     </head>
 
     <body>
@@ -30,15 +57,18 @@
         <br>
         <div>
             <div class="container center">
-                <h3 class='center'>Twój całkowity budżet to: <span style="color:blue;">{{budget}}</span> złotych</h3>
+                <h3 class='center'>Twój całkowity budżet to: <span style="color:green;">{{budget}}</span> złotych</h3>
                 <h3 clas='center'>Wydałeś w sumie : <span style="color:red;">{{expenses}}</span> złotych</h3>
-                <h3 clas='center'>Zostało : <span style="color:green;">{{remaining}}</span> złotych</h3>
+                <h3 clas='center'>Zostało : <span style="color:blue;">{{remaining}}</span> złotych</h3>
             </div>
+            <button type="button" class="collapsible">Dodawanie wydatku</button>
+            <div class="content">
                                 <form class="col s12" action='{% url "add item" %}' method='post' enctype="multipart/form-data">
                                         {% csrf_token %}
                                         {{ form.as_div }}
                                         <input type="submit" value="Dodaj wydatek">
-                                </form>   
+                                </form>  
+            </div> 
         </div>
 
                 <div>
@@ -85,6 +115,22 @@
                 var elems = document.querySelectorAll('.datepicker');
                 var instances = M.Datepicker.init(elems, {format:'yyyy-mm-dd'});
             });
+        </script>
+        <script>
+            var coll = document.getElementsByClassName("collapsible");
+            var i;
+
+            for (i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
         </script>
     </body>
 

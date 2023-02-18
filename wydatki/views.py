@@ -25,9 +25,9 @@ def index(request):
     except TypeError:
         print('Brak danych.')
     if expense_total['expenses']:
-        context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':abs(expense_total['expenses']), 'remaining':(budget_total['budget']-abs(expense_total['expenses']))}
+        context = {'expense_items':expense_items,'budget':round(budget_total['budget'],2),'expenses':round(abs(expense_total['expenses']),2), 'remaining':round((budget_total['budget']-abs(expense_total['expenses'])),2)}
     else:   #naprawia błąd w przypadku braku wpisów
-        context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':0 }
+        context = {'expense_items':expense_items,'budget':round(budget_total['budget'],2),'expenses':round((expense_total['expenses']),2), 'remaining':0 }
     context['form']= ExpenseDetails()
     return render(request,'wydatki/index.html',context=context)
 
