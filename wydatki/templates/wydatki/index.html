@@ -13,6 +13,18 @@
         <style>
             /* Style the button that is used to open and close the collapsible content */
             .collapsible {
+            background-color: #0f00009c;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+            }
+
+            .dark-theme .collapsible {
             background-color: #eee;
             color: #444;
             cursor: pointer;
@@ -34,10 +46,23 @@
               padding: 0 18px;
               display: none;
               overflow: hidden;
+              background-color: #222;
+            }
+            .dark-theme .content {
+              padding: 0 18px;
+              display: none;
+              overflow: hidden;
               background-color: #f1f1f1;
             }
+            body.dark-theme {
+                color: #222;
+                background: #fff;
+            }
+            body {
+                color: #eee;
+                background: #121212;
+            }
         </style>
-       
     </head>
 
     <body>
@@ -46,6 +71,7 @@
             <div class="nav-wrapper">
                 <a href='{% url "index" %}' class='brand-logo center'>Cześć, {{ user }}</a>
                 <ul class="right">
+                    <li><button class="btn-toggle">Przełącz tryb ciemny</button></li>
                     <li><a href="../ankiety" class='btn'>Przejdź do ankiet</a></li>
                     {% if user.is_superuser %}
                         <li><a href="../admin" class='btn'>Przejdź do administrowania</a></li>
@@ -131,6 +157,12 @@
                 }
             });
         }
+        </script>
+        <script>
+            const btn = document.querySelector(".btn-toggle");
+            btn.addEventListener("click", function () {
+                document.body.classList.toggle("dark-theme");
+            });
         </script>
     </body>
 

@@ -20,7 +20,21 @@ def index(request):
         expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
         fig,ax=plt.subplots()
         ax.bar(['Wydatki','Budżet'], [math.ceil(abs(expense_total['expenses'])),math.ceil(budget_total['budget'])],color=['red','green'])
-        ax.set_title('Suma wydatków i budżet')
+        ax.set_title('Suma wydatków i budżet', color="w")
+        plt.rcParams.update({
+            "lines.color": "white",
+            "patch.edgecolor": "white",
+            "text.color": "black",
+            "axes.facecolor": "white",
+            "axes.edgecolor": "lightgray",
+            "axes.labelcolor": "white",
+            "xtick.color": "white",
+            "ytick.color": "white",
+            "grid.color": "lightgray",
+            "figure.facecolor": "black",
+            "figure.edgecolor": "black",
+            "savefig.facecolor": "black",
+            "savefig.edgecolor": "black"})
         plt.savefig('wydatki/static/wydatki/expense.jpg')
     except TypeError:
         print('Brak danych.')
@@ -45,7 +59,21 @@ def add_item(request):
             ax.bar(['Wydatki','Budżet'], [math.ceil(abs(expense_total['expenses'])),math.ceil(budget_total['budget'])],color=['red','green'])
         else:
             ax.bar(['Wydatki','Budżet'], 0,0,color=['red','green'])
-        ax.set_title('Suma wydatków i budżet')
+        ax.set_title('Suma wydatków i budżet',  color="w")
+        plt.rcParams.update({
+            "lines.color": "white",
+            "patch.edgecolor": "white",
+            "text.color": "black",
+            "axes.facecolor": "white",
+            "axes.edgecolor": "lightgray",
+            "axes.labelcolor": "white",
+            "xtick.color": "white",
+            "ytick.color": "white",
+            "grid.color": "lightgray",
+            "figure.facecolor": "black",
+            "figure.edgecolor": "black",
+            "savefig.facecolor": "black",
+            "savefig.edgecolor": "black"})
         plt.savefig('wydatki/static/wydatki/expense.jpg')
         return HttpResponseRedirect('app')
     else:
