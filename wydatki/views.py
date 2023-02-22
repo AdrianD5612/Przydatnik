@@ -41,7 +41,7 @@ def index(request):
     if expense_total['expenses']:
         context = {'expense_items':expense_items,'budget':round(budget_total['budget'],2),'expenses':round(abs(expense_total['expenses']),2), 'remaining':round((budget_total['budget']-abs(expense_total['expenses'])),2)}
     else:   #naprawia błąd w przypadku braku wpisów
-        context = {'expense_items':expense_items,'budget':round(budget_total['budget'],2),'expenses':round((expense_total['expenses']),2), 'remaining':0 }
+        context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':0 }
     context['form']= ExpenseDetails()
     mode='dark' #domyślny motyw
     if Theme.objects.filter(user_theme=request.user).exists():
@@ -121,7 +121,7 @@ def theme(request):
             user_saving.mode='dark'
             user_saving.save()
         else:
-            user2=Theme(user_theme=request.user, color='dark')
+            user2=Theme(user_theme=request.user, mode='dark')
             user2.save()
     elif mode=='white':
         if Theme.objects.filter(user_theme=request.user).exists():
@@ -130,6 +130,6 @@ def theme(request):
             user_saving.mode='white'
             user_saving.save()
         else:
-            user2=Theme(user_theme=request.user, color='white')
+            user2=Theme(user_theme=request.user, mode='white')
             user2.save()
     return redirect('/app')
