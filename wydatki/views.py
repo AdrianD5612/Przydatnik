@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect,HttpResponse
-from .models import ExpenseInfo  
+from .models import ExpenseInfo, Theme  
 from django.contrib.auth import logout,login,authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -43,6 +43,10 @@ def index(request):
     else:   #naprawia błąd w przypadku braku wpisów
         context = {'expense_items':expense_items,'budget':round(budget_total['budget'],2),'expenses':round((expense_total['expenses']),2), 'remaining':0 }
     context['form']= ExpenseDetails()
+    mode='dark' #domyślny motyw
+    if Theme.objects.filter(user_theme=request.user).exists():
+        mode= Theme.objects.get(user_theme=request.user).mode
+    context['mode']=mode
     return render(request,'wydatki/index.html',context=context)
 
 def add_item(request):
@@ -106,3 +110,26 @@ def sign_up(request):
     else:
         form = UserCreationForm
         return render(request,'wydatki/sign_up.html',{'form':form}) 
+
+def theme(request):
+    mode=request.GET.get('mode')
+
+    if mode=='dark':
+        if Theme.objects.filter(user_theme=request.user).exists():
+            user_saving= Theme.objects.get(user_theme=request.user)
+            user_saving.user_theme=request.user
+            user_saving.mode='dark'
+            user_saving.save()
+        else:
+            user2=Theme(user_theme=request.user, color='dark')
+            user2.save()
+    elif mode=='white':
+        if Theme.objects.filter(user_theme=request.user).exists():
+            user_saving= Theme.objects.get(user_theme=request.user)
+            user_saving.user_theme=request.user
+            user_saving.mode='white'
+            user_saving.save()
+        else:
+            user2=Theme(user_theme=request.user, color='white')
+            user2.save()
+    return redirect('/app')

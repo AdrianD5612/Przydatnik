@@ -21,3 +21,13 @@ class ExpenseInfo(models.Model):
     date_added = models.DateField()
     user_expense = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='images')
+
+class Theme(models.Model):
+    mode = models.CharField(max_length=10)
+    user_theme = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user_theme'], name='One Entry Per User')
+        ]
