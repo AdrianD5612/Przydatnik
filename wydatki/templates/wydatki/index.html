@@ -16,6 +16,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Wydatki</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            .dynamicscale-img {
+                width: 100%;
+                height: auto;
+            }
+        </style>
     </head>
 
     <body>
@@ -75,9 +81,17 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                    <div>
-                        <img class='responsive-img' src= "" id="imagee">
-                        <img class='responsive-img' src= "{% static 'wydatki/expense.jpg' %}">
+                </div>
+                <div class="section">
+                    <div class="row">
+                        <div class="container">
+                            <div class="col s6">
+                                <img class='dynamicscale-img' src= "" id="imagee" onclick="clearImage()">
+                            </div>
+                            <div class="col s6">
+                                <img class='dynamicscale-img' src= "{% static 'wydatki/expense.jpg' %}">
+                            </div>
+                        </div>
                     </div>
                 </div>
         <script type="text/javascript">
@@ -87,6 +101,12 @@
             }
         </script>
 
+        <script type="text/javascript">
+            function clearImage()
+            {
+                document.getElementById("imagee").src="";
+            }
+        </script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
@@ -111,12 +131,6 @@
                 }
             });
         }
-        </script>
-        <script>
-            const btn = document.querySelector(".btn-toggle");
-            btn.addEventListener("click", function () {
-                document.body.classList.toggle("dark-theme");
-            });
         </script>
     </body>
 
