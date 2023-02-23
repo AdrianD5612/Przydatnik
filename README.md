@@ -6,7 +6,7 @@ Aktualnie składa się z następujących modułów:
 2. Wydatki
 
 **Ankiety**: pozwalają zadać pytanie do żytkownika aby wybrał jedną z wielu opcji  
-**Wydatki**: umożliwiają notowanie historii kosztów oraz wpływów do domowego budżetu
+**Wydatki**: umożliwiają notowanie historii kosztów oraz wpływów do domowego budżetu  Ustawienia dodatkowe: *SHARED_MODE*:tryb łączenia wydatków wszystkich użytkowników w jedną całość zamiast prowadzenia indywidualnego spisu dla każdego z osobna
 
 Kod źródłowy bazowany na następujących samouczkach:  
 [Writing your first Django app](https://docs.djangoproject.com/en/4.1/intro/tutorial01)  

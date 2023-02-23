@@ -10,14 +10,20 @@ import numpy as np
 from django.db.models import Q
 from wydatki.forms import ExpenseDetails  
 import math
+from django.conf import settings
 
 
 
 def index(request):
-    expense_items = ExpenseInfo.objects.filter(user_expense=request.user).order_by('-date_added')
     try:
-        budget_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
-        expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
+        if settings.SHARED_MODE: #tryb wspólnych wydatków
+            expense_items = ExpenseInfo.objects.order_by('-date_added')
+            budget_total = ExpenseInfo.objects.aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
+            expense_total = ExpenseInfo.objects.aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
+        else:   #tryb własnych wydatków
+            expense_items = ExpenseInfo.objects.filter(user_expense=request.user).order_by('-date_added')
+            budget_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
+            expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
         fig,ax=plt.subplots()
         ax.bar(['Wydatki','Budżet'], [math.ceil(abs(expense_total['expenses'])),math.ceil(budget_total['budget'])],color=['red','green'])
         ax.set_title('Suma wydatków i budżet', color="w")
@@ -56,8 +62,12 @@ def add_item(request):
             obj = form.save(commit=False)
             obj.user_expense = request.user #zanim formularz zostanie zapisany w bazie musi zawierać nazwę użytkownika
             obj.save()
-        budget_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
-        expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
+        if settings.SHARED_MODE: #tryb wspólnych wydatków
+            budget_total = ExpenseInfo.objects.aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
+            expense_total = ExpenseInfo.objects.aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
+        else: #tryb własnych wydatków
+            budget_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
+            expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
         fig,ax=plt.subplots()
         if expense_total['expenses']:
             ax.bar(['Wydatki','Budżet'], [math.ceil(abs(expense_total['expenses'])),math.ceil(budget_total['budget'])],color=['red','green'])
