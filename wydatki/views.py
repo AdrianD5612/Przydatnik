@@ -27,7 +27,7 @@ def index(request):
         fig,ax=plt.subplots()
         ax.bar(['Wydatki','Budżet'], [math.ceil(abs(expense_total['expenses'])),math.ceil(budget_total['budget'])],color=['red','green'])
         ax.set_title('Suma wydatków i budżet', color="w")
-        plt.rcParams.update({
+        plt.rcParams.update({ #ciemny motyw dla wykresu
             "lines.color": "white",
             "patch.edgecolor": "white",
             "text.color": "black",
@@ -44,12 +44,12 @@ def index(request):
         plt.savefig('wydatki/static/wydatki/expense.jpg')
     except TypeError:
         print('Brak danych.')
-    if expense_total['expenses']:
+    if expense_total['expenses']: #przekazanie wpisów oraz sumy do statystyk
         context = {'expense_items':expense_items,'budget':round(budget_total['budget'],2),'expenses':round(abs(expense_total['expenses']),2), 'remaining':round((budget_total['budget']-abs(expense_total['expenses'])),2)}
     else:   #naprawia błąd w przypadku braku wpisów
         context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':0 }
     context['form']= ExpenseDetails()
-    mode='dark' #domyślny motyw
+    mode='dark' #domyślny motyw=ciemny
     if Theme.objects.filter(user_theme=request.user).exists():
         mode= Theme.objects.get(user_theme=request.user).mode
     context['mode']=mode
@@ -71,10 +71,10 @@ def add_item(request):
         fig,ax=plt.subplots()
         if expense_total['expenses']:
             ax.bar(['Wydatki','Budżet'], [math.ceil(abs(expense_total['expenses'])),math.ceil(budget_total['budget'])],color=['red','green'])
-        else:
+        else:   #naprawia błąd w przypadku braku wpisów
             ax.bar(['Wydatki','Budżet'], 0,0,color=['red','green'])
         ax.set_title('Suma wydatków i budżet',  color="w")
-        plt.rcParams.update({
+        plt.rcParams.update({   #ciemny motyw dla wykresu
             "lines.color": "white",
             "patch.edgecolor": "white",
             "text.color": "black",

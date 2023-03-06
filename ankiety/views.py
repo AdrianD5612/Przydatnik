@@ -13,8 +13,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """
-        Return the last five published questions (not including those set to be
-        published in the future).
+        Wyświetla 5 ostatnich ankiet które mają przeszłą date publikacji
         """
         return Question.objects.filter(
             pub_date__lte=timezone.now()
@@ -26,7 +25,7 @@ class DetailView(generic.DetailView):
     template_name = 'ankiety/detail.html'
     def get_queryset(self):
         """
-        Excludes any questions that aren't published yet.
+        Wyświetla wszystkie ankiety które mają przeszłą date publikacji
         """
         return Question.objects.filter(pub_date__lte=timezone.now())
 
@@ -40,7 +39,7 @@ def vote(request, question_id):
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
+        # Błąd, ponowne wyświetlanie wyboru
         return render(request, 'ankiety/detail.html', {
             'question': question,
             'error_message': "Nic nie wybrałeś.",
@@ -48,7 +47,5 @@ def vote(request, question_id):
     else:
         selected_choice.votes = True
         selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
+        # Przekierowanie po wysłaniu POST
         return HttpResponseRedirect(reverse('ankiety:wyniki', args=(question.id,)))

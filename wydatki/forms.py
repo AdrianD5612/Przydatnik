@@ -5,7 +5,7 @@ from django.forms import widgets
 from django.db import models
 from django.forms import ModelForm
   
-class ExpenseDetails(forms.ModelForm):  
+class ExpenseDetails(forms.ModelForm):  #dodawanie nowego wydatku
     class Meta:
         model = ExpenseInfo
         fields = ('expense_name', 'cost',  'date_added' , 'image')
