@@ -15,13 +15,12 @@
 
 <nav>
     <div class="nav-wrapper">
-        <a href='' class='brand-logo center'>Cześć, {{ user }}</a>
         <ul class="right">
             <li><a href='{% url "index" %}' class='btn'>Przejdź do wydatków</a></li>
             {% if user.is_superuser %}
                 <li><a href="../admin" class='btn'>Przejdź do administrowania</a></li>
             {% endif %}
-            <li><a href='{% url "logout" %}' class='btn'>Wyloguj</a></li>
+            <li><a href='{% url "logout" %}' class='btn'>Wyloguj({{ user }})</a></li>
         </ul>
     </div>
 </nav>
