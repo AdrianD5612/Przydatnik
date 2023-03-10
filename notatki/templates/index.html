@@ -1,0 +1,90 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        {% if mode == "dark" %}
+        <link rel="stylesheet" href="{% static 'darkstyle.css' %}">
+        {% endif %}
+        {% if mode == "white" %}
+        <link rel="stylesheet" href="{% static 'whitestyle.css' %}">
+        {% endif %}
+        <title>Notatki</title>
+    </head>
+
+    <body>
+        
+        <nav>
+            <div class="nav-wrapper">
+                <ul class="right">
+                    <li><a href="/notatki/theme?mode=white" class='btn'>Jasny motyw</a></li>
+                    <li><a href="/notatki/theme?mode=dark" class='btn'>Ciemny motyw</a></li>
+                    <li><a href="../ankiety" class='btn'>Przejdź do ankiet</a></li>
+                    {% if user.is_superuser %}
+                        <li><a href="../admin" class='btn'>Przejdź do administrowania</a></li>
+                    {% endif %}
+                    <li><a href='{% url "logout" %}' class='btn'>Wyloguj({{ user }})</a></li>
+                </ul>
+            </div>
+        </nav>
+        <br>
+        <div>
+            <button type="button" class="collapsible">Dodawanie wydatku</button>
+            <div class="content">
+                                <form class="col s12" action='{% url "add item" %}' method='post' enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        {{ form.as_div }}
+                                        <input type="submit" value="Dodaj wydatek">
+                                </form>  
+            </div> 
+        </div>
+
+                <div>
+                        <table class="striped centered responsive-table">
+                            <thead>
+                                <tr>
+                                    <th>Tytuł</th>
+                                    <th>Data utworzenia</th>
+                                    <th>Publiczna?</th>
+                                    <th>Treść</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for notatka in note_list %}
+                                <tr>
+                                    <td>{{ notatka.title }}</td>
+                                    <td>{{ notatka.date_added }}</td>
+                                    <td>{{ notatka.publicnote }}</td>
+                                    <td>{{ notatka.content }}</td>
+                                    <td></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                </div>
+
+        <script>
+            var coll = document.getElementsByClassName("collapsible");
+            var i;
+
+            for (i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+        </script>
+    </body>
+
+</html>
