@@ -12,9 +12,9 @@ from wydatki.forms import ExpenseDetails
 import math
 from django.conf import settings
 
+# TODO:guzik kolor napisu w dark mode niewidoczny
 
-
-def index(request):
+def index(request): #generowanie strony głównej wydatków
     try:
         if settings.SHARED_MODE: #tryb wspólnych wydatków
             expense_items = ExpenseInfo.objects.order_by('-date_added')
@@ -50,12 +50,12 @@ def index(request):
         context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':0 }
     context['form']= ExpenseDetails()
     mode='dark' #domyślny motyw=ciemny
-    if Theme.objects.filter(user_theme=request.user).exists():
+    if Theme.objects.filter(user_theme=request.user).exists():  #jeśli użytkownik już wybierał motyw
         mode= Theme.objects.get(user_theme=request.user).mode
     context['mode']=mode
     return render(request,'wydatki/index.html',context=context)
 
-def add_item(request):
+def add_item(request):  #dodawanie wydatku
     if request.method == 'POST':
         form = ExpenseDetails(request.POST, request.FILES)
         if form.is_valid():
@@ -95,14 +95,14 @@ def add_item(request):
         context = {
             'form': form
         }
-    return render(request, 'upload_image.html', context)
+    return render(request, 'wydatki/index.html', context)
 
-def logout_view(request):
+def logout_view(request):   #wylogowanie
     logout(request)
     return HttpResponseRedirect('/')
 
 
-def sign_up(request):
+def sign_up(request):   #rejestracja nowego użytkownika
     errors=''
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -121,7 +121,7 @@ def sign_up(request):
         form = UserCreationForm
         return render(request,'wydatki/sign_up.html',{'form':form}) 
 
-def theme(request):
+def theme(request): #wybranie motywu
     mode=request.GET.get('mode')
 
     if mode=='dark':
