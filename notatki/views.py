@@ -7,6 +7,7 @@ from notatki.forms import NotatkaForm
 import datetime 
 
 # TODO:guzik kolor napisu w dark mode niewidoczny
+# TODO:edycja notatek
 
 def index(request): #generowanie strony głównej notatek
     try:

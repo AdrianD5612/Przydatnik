@@ -54,3 +54,4 @@ docs/_build/
 media
 db.sqlite3
 wydatki/static/wydatki/expense.jpg
+TODO.md

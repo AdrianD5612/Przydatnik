@@ -3,7 +3,8 @@ from . import views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('', auth_views.LoginView.as_view(),name='login'),
+    path('login', auth_views.LoginView.as_view(),name='login'),
+    path('', views.custom_login),
     path('app',views.index,name='index'),
     path('add_item',views.add_item,name='add item'),
     path('accounts/',include('django.contrib.auth.urls')),

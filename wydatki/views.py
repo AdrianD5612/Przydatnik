@@ -101,6 +101,12 @@ def logout_view(request):   #wylogowanie
     logout(request)
     return HttpResponseRedirect('/')
 
+def custom_login(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('app')
+    else:
+        return HttpResponseRedirect('login')
+
 
 def sign_up(request):   #rejestracja nowego użytkownika
     errors=''
