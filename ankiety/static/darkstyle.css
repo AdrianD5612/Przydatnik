@@ -23,6 +23,10 @@
       color: black;
     }
 
+    textarea{
+      color: #ffffff;
+    }
+
     /* zawartość chowanego panelu */
     .content {
       padding: 0 18px;

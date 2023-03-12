@@ -1,0 +1,70 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        {% if mode == "dark" %}
+        <link rel="stylesheet" href="{% static 'darkstyle.css' %}">
+        {% endif %}
+        {% if mode == "white" %}
+        <link rel="stylesheet" href="{% static 'whitestyle.css' %}">
+        {% endif %}
+        <title>Notatki</title>
+        <script type="module" src="https://md-block.verou.me/md-block.js"></script>
+        <style>
+            input[type="checkbox"] {
+                opacity: 1 !important;
+            }
+        </style>
+    </head>
+
+    <body>
+        
+        <nav>
+            <div class="nav-wrapper">
+                <ul class="right">
+                    <li><a href="/notatki/theme?mode=white" class='btn'>Jasny motyw</a></li>
+                    <li><a href="/notatki/theme?mode=dark" class='btn'>Ciemny motyw</a></li>
+                    <li><a href="../ankiety" class='btn'>Przejdź do ankiet</a></li>
+                    <li><a href='{% url "index" %}' class='btn'>Przejdź do wydatków</a></li>
+                    {% if user.is_superuser %}
+                        <li><a href="../admin" class='btn'>Przejdź do administrowania</a></li>
+                    {% endif %}
+                    <li><a href='{% url "logout" %}' class='btn'>Wyloguj({{ user }})</a></li>
+                </ul>
+            </div>
+        </nav>
+        <br>
+        <div>
+            {% block content %}
+            <form class="col s12" action="{% url 'save changes' note_to_edit.id %}" method='post'>
+                {% csrf_token %}
+                <div>
+                    <label>Tytuł:</label>
+                    <input type="text" name="title" maxlength="150" required="" id="id_title" value="{{ note_to_edit.title }}">
+                </div>
+                <div>
+                    <label>Publiczna?:</label>
+                    {% if note_to_edit.publicnote %}
+                    <input type="checkbox" name="publicnote"  id="id_public" checked>
+                    {% else %}
+                    <input type="checkbox" name="publicnote"  id="id_public">
+                    {% endif %}
+                </div>
+                <div>
+                    <label>Treść:</label>
+                    <textarea name="content" name='content' id="id_content" rows="10" cols="100">>{{ note_to_edit.content }}</textarea>
+                </div>
+                <div>
+                    <input type="submit" value="Zapisz zmiany" class="button">
+                </div>
+            </form>
+            {% endblock %}
+        </div>
+    </body>
+
+</html>

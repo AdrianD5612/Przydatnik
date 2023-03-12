@@ -72,7 +72,7 @@
                                     {% else %}
                                     <td><b>Prywatna</b></td>
                                     {% endif %}
-                                    <td><button type="button" class="collapsible">Wyświetl</button><div class="content"><md-block>{{ notatka.content }}</md-block></div></td>
+                                    <td><button type="button" class="collapsible">Wyświetl</button><div class="content"><md-block>{{ notatka.content }}</md-block><a href="{% url 'edit note' notatka.id %}">Edytuj</a><a href="{% url 'delete note' notatka.id %}">Usuń</a></div></td>
                                     <td></td>
                                 </tr>
                                 {% endfor %}
