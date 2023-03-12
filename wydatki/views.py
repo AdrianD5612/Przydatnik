@@ -12,8 +12,6 @@ from wydatki.forms import ExpenseDetails
 import math
 from django.conf import settings
 
-# TODO:guzik kolor napisu w dark mode niewidoczny
-
 def index(request): #generowanie strony głównej wydatków
     try:
         if settings.SHARED_MODE: #tryb wspólnych wydatków

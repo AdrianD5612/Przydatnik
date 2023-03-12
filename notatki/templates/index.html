@@ -45,7 +45,7 @@
                                 <form class="col s12" action='{% url "add note" %}' method='post' enctype="multipart/form-data">
                                         {% csrf_token %}
                                         {{ form.as_div }}
-                                        <input type="submit" value="Dodaj notatkę">
+                                        <input type="submit" value="Dodaj notatkę" class="button">
                                 </form>  
             </div> 
         </div>
