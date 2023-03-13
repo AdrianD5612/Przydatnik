@@ -45,6 +45,8 @@
                                 <form class="col s12" action='{% url "add note" %}' method='post' enctype="multipart/form-data">
                                         {% csrf_token %}
                                         {{ form.as_div }}
+                                        <label>Podgląd:</label>
+                                        <md-block id="preview"></md-block>
                                         <input type="submit" value="Dodaj notatkę" class="button">
                                 </form>  
             </div> 
@@ -84,7 +86,7 @@
                             </tbody>
                         </table>
                 </div>
-
+        <!-- funkcjonalność przycisku do chowania -->
         <script>
             var coll = document.getElementsByClassName("collapsible");
             var i;
@@ -100,6 +102,14 @@
                 }
             });
         }
+        </script>
+        <!-- podgląd Markdown -->
+        <script>
+            var contentField=document.getElementById("id_content");
+            var mdpreview=document.getElementById("preview");
+            contentField.addEventListener('input', function() {
+                mdpreview.mdContent=contentField.value
+            });
         </script>
     </body>
 

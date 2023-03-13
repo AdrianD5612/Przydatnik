@@ -58,7 +58,11 @@
                 </div>
                 <div>
                     <label>Treść:</label>
-                    <textarea name="content" name='content' id="id_content" rows="10" cols="100">>{{ note_to_edit.content }}</textarea>
+                    <textarea name="content" name='content' id="id_content" rows="10" cols="100">{{ note_to_edit.content }}</textarea>
+                </div>
+                <div>
+                    <label>Podgląd:</label>
+                    <md-block id="preview">{{ note_to_edit.content }}</md-block>
                 </div>
                 <div>
                     <input type="submit" value="Zapisz zmiany" class="button">
@@ -67,5 +71,13 @@
             {% endblock %}
         </div>
     </body>
+    <!-- podgląd Markdown -->
+    <script>
+        var contentField=document.getElementById("id_content");
+        var mdpreview=document.getElementById("preview");
+        contentField.addEventListener('input', function() {
+            mdpreview.mdContent=contentField.value
+        });
+    </script>
 
 </html>
