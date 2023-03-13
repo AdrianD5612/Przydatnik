@@ -20,7 +20,7 @@ class ExpenseInfo(models.Model):
     cost = models.DecimalField(max_digits=5, decimal_places=2)
     date_added = models.DateField()
     user_expense = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images')
+    image = models.ImageField(blank=True, upload_to='images')
 
 class Theme(models.Model):
     mode = models.CharField(max_length=10)
