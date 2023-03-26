@@ -35,17 +35,21 @@ def add_note(request):  #dodawanie notatki
 
 def delete_note(request,note_id=None):  #usuwanie notatki
     note_to_delete=Notatka.objects.get(id=note_id)
-    note_to_delete.delete()
+    if note_to_delete.author==request.user: #walidacja czy na pewno jest to notatka użytkownika
+        note_to_delete.delete()
     return HttpResponseRedirect('/notatki')
 
 def edit_note(request,note_id=None):  #edytowanie notatki
     note_to_edit = Notatka.objects.filter(id=note_id)
     note_to_edit=note_to_edit[0]    #jest tylko jedna notatka więc zamieniam Queryset na pojedyńczy wpis
-    mode='dark' #domyślny motyw=ciemny
-    if Theme.objects.filter(user_theme=request.user).exists():  #jeśli użytkownik już wybierał motyw
-        mode= Theme.objects.get(user_theme=request.user).mode
-    context = {'note_to_edit':note_to_edit, 'mode':mode}
-    return render(request,'edit.html',context=context)
+    if note_to_edit.author==request.user: #walidacja czy na pewno jest to notatka użytkownika
+        mode='dark' #domyślny motyw=ciemny
+        if Theme.objects.filter(user_theme=request.user).exists():  #jeśli użytkownik już wybierał motyw
+            mode= Theme.objects.get(user_theme=request.user).mode
+        context = {'note_to_edit':note_to_edit, 'mode':mode}
+        return render(request,'edit.html',context=context)
+    else:
+        return HttpResponseRedirect('/notatki')
 
 def save_changes(request,note_id=None): #zapisanie zmian w edytowanej notatce
     if request.method == 'POST':
