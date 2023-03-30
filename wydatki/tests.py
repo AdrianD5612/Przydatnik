@@ -41,3 +41,10 @@ class IndexViewTests(TestCase):
         self.assertContains(response, 'Twój całkowity budżet to: <span style="color:green;">30')    #budżet
         self.assertContains(response, 'Wydałeś w sumie : <span style="color:red;">20')  #wydałeś
         self.assertContains(response, 'Zostało : <span style="color:blue;">10') #zostało
+    def test_anonymous(self):
+        """
+        anonimowy powinien zostać przekierowany
+        """
+        self.client.logout()
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 302) #302 Redirection_FOUND
