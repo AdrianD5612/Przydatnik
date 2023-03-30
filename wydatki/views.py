@@ -48,7 +48,7 @@ def index(request): #generowanie strony głównej wydatków
             plt.rcParams.update(plt.rcParamsDefault)
         plt.savefig('wydatki/static/wydatki/expense.jpg')
     except TypeError:
-        print('Brak danych.')
+        pass    #błąd w przypadku braku wpisów, nie trzeba reagować
     if expense_total['expenses']: #przekazanie wpisów oraz sumy do statystyk
         context = {'expense_items':expense_items,'budget':round(budget_total['budget'],2),'expenses':round(abs(expense_total['expenses']),2), 'remaining':round((budget_total['budget']-abs(expense_total['expenses'])),2)}
     else:   #naprawia błąd w przypadku braku wpisów
