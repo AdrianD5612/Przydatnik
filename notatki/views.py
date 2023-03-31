@@ -6,13 +6,14 @@ from django.db.models import Q
 from notatki.forms import NotatkaForm 
 import datetime 
 from django.urls import reverse
+from django.http import HttpResponseForbidden
 
 def index(request): #generowanie strony głównej notatek
     if request.user.is_authenticated:
         try:
             note_list = Notatka.objects.filter(Q(author=request.user) | Q(publicnote=True)).order_by('-date_added') #Q umożliwia łączone wyrażenie typu OR
         except TypeError:
-            print('Brak danych.')
+            pass    #błąd w przypadku braku wpisów, nie trzeba reagować
         mode='dark' #domyślny motyw=ciemny
         if Theme.objects.filter(user_theme=request.user).exists():  #jeśli użytkownik już wybierał motyw
             mode= Theme.objects.get(user_theme=request.user).mode
@@ -38,12 +39,14 @@ def add_note(request):  #dodawanie notatki
             }
         return render(request, 'index.html', context)
     else:
-        return redirect('/')
+        return HttpResponseForbidden()
 
 def delete_note(request,note_id=None):  #usuwanie notatki
     note_to_delete=Notatka.objects.get(id=note_id)
     if note_to_delete.author==request.user: #walidacja czy na pewno jest to notatka użytkownika
         note_to_delete.delete()
+    else:
+        return HttpResponseForbidden()
     return HttpResponseRedirect('/notatki')
 
 def edit_note(request,note_id=None):  #edytowanie notatki
@@ -56,21 +59,23 @@ def edit_note(request,note_id=None):  #edytowanie notatki
         context = {'note_to_edit':note_to_edit, 'mode':mode}
         return render(request,'edit.html',context=context)
     else:
-        return HttpResponseRedirect('/notatki')
+        return HttpResponseForbidden()
 
 def save_changes(request,note_id=None): #zapisanie zmian w edytowanej notatce
     if request.method == 'POST':
         updated_note = Notatka.objects.get(id=note_id)
-        updated_note.title = request.POST.get('title')
-        updated_note.publicnote = request.POST.get('publicnote')
-        # checkbox wymaga przetworzenia na boolean
-        if updated_note.publicnote=='on':
-            updated_note.publicnote=True
+        if updated_note.author==request.user:   #walidacja czy na pewno jest to notatka użytkownika
+            updated_note.title = request.POST.get('title')
+            updated_note.publicnote = request.POST.get('publicnote')
+            # checkbox wymaga przetworzenia na boolean
+            if updated_note.publicnote=='on':
+                updated_note.publicnote=True
+            else:
+                updated_note.publicnote=False
+            updated_note.content = request.POST.get('content')
+            updated_note.save()
         else:
-            updated_note.publicnote=False
-        updated_note.content = request.POST.get('content')
-        print(updated_note.publicnote)
-        updated_note.save()
+            return HttpResponseForbidden()
     return redirect('/notatki')
 
 def theme(request): ##wybranie motywu
