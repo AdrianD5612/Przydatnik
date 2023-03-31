@@ -13,58 +13,64 @@ import math
 from django.conf import settings
 
 def index(request): #generowanie strony głównej wydatków
-    try:
-        if settings.SHARED_MODE: #tryb wspólnych wydatków
-            expense_items = ExpenseInfo.objects.order_by('-date_added')
-            budget_total = ExpenseInfo.objects.aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
-            expense_total = ExpenseInfo.objects.aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
-        else:   #tryb własnych wydatków
-            expense_items = ExpenseInfo.objects.filter(user_expense=request.user).order_by('-date_added')
-            budget_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
-            expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
-        mode='dark' #domyślny motyw=ciemny
-        if Theme.objects.filter(user_theme=request.user).exists():  #jeśli użytkownik już wybierał motyw
-            mode= Theme.objects.get(user_theme=request.user).mode
-        fig,ax=plt.subplots()
-        ax.bar(['Wydatki','Budżet'], [math.ceil(abs(expense_total['expenses'])),math.ceil(budget_total['budget'])],color=['red','green'])
-        if  mode=='dark':
-            ax.set_title('Suma wydatków i budżet', color="w")
-            plt.rcParams.update({ #ciemny motyw dla wykresu
-                "lines.color": "white",
-                "patch.edgecolor": "white",
-                "text.color": "black",
-                "axes.facecolor": "white",
-                "axes.edgecolor": "lightgray",
-                "axes.labelcolor": "white",
-                "xtick.color": "white",
-                "ytick.color": "white",
-                "grid.color": "lightgray",
-                "figure.facecolor": "black",
-                "figure.edgecolor": "black",
-                "savefig.facecolor": "black",
-                "savefig.edgecolor": "black"})
-        else:
-            ax.set_title('Suma wydatków i budżet', color="black")
-            plt.rcParams.update(plt.rcParamsDefault)
-        plt.savefig('wydatki/static/wydatki/expense.jpg')
-    except TypeError:
-        print('Brak danych.')
-    if expense_total['expenses']: #przekazanie wpisów oraz sumy do statystyk
-        context = {'expense_items':expense_items,'budget':round(budget_total['budget'],2),'expenses':round(abs(expense_total['expenses']),2), 'remaining':round((budget_total['budget']-abs(expense_total['expenses'])),2)}
-    else:   #naprawia błąd w przypadku braku wpisów
-        context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':0 }
-    context['form']= ExpenseDetails()
-    context['mode']=mode
-    return render(request,'wydatki/index.html',context=context)
+    if request.user.is_authenticated:
+        try:
+            if settings.SHARED_MODE: #tryb wspólnych wydatków
+                expense_items = ExpenseInfo.objects.order_by('-date_added')
+                budget_total = ExpenseInfo.objects.aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
+                expense_total = ExpenseInfo.objects.aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
+            else:   #tryb własnych wydatków
+                expense_items = ExpenseInfo.objects.filter(user_expense=request.user).order_by('-date_added')
+                budget_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(budget=Sum('cost',filter=Q(cost__gt=0)))
+                expense_total = ExpenseInfo.objects.filter(user_expense=request.user).aggregate(expenses=Sum('cost',filter=Q(cost__lt=0)))
+            mode='dark' #domyślny motyw=ciemny
+            if Theme.objects.filter(user_theme=request.user).exists():  #jeśli użytkownik już wybierał motyw
+                mode= Theme.objects.get(user_theme=request.user).mode
+            fig,ax=plt.subplots()
+            ax.bar(['Wydatki','Budżet'], [math.ceil(abs(expense_total['expenses'])),math.ceil(budget_total['budget'])],color=['red','green'])
+            if  mode=='dark':
+                ax.set_title('Suma wydatków i budżet', color="w")
+                plt.rcParams.update({ #ciemny motyw dla wykresu
+                    "lines.color": "white",
+                    "patch.edgecolor": "white",
+                    "text.color": "black",
+                    "axes.facecolor": "white",
+                    "axes.edgecolor": "lightgray",
+                    "axes.labelcolor": "white",
+                    "xtick.color": "white",
+                    "ytick.color": "white",
+                    "grid.color": "lightgray",
+                    "figure.facecolor": "black",
+                    "figure.edgecolor": "black",
+                    "savefig.facecolor": "black",
+                    "savefig.edgecolor": "black"})
+            else:
+                ax.set_title('Suma wydatków i budżet', color="black")
+                plt.rcParams.update(plt.rcParamsDefault)
+            plt.savefig('wydatki/static/wydatki/expense.jpg')
+        except TypeError:
+            pass    #błąd w przypadku braku wpisów, nie trzeba reagować
+        if expense_total['expenses']: #przekazanie wpisów oraz sumy do statystyk
+            context = {'expense_items':expense_items,'budget':round(budget_total['budget'],2),'expenses':round(abs(expense_total['expenses']),2), 'remaining':round((budget_total['budget']-abs(expense_total['expenses'])),2)}
+        else:   #naprawia błąd w przypadku braku wpisów
+            context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':0 }
+        context['form']= ExpenseDetails()
+        context['mode']=mode
+        return render(request,'wydatki/index.html',context=context)
+    else:
+        return HttpResponseRedirect('login')
 
 def add_item(request):  #dodawanie wydatku
-    if request.method == 'POST':
-        form = ExpenseDetails(request.POST, request.FILES)
-        if form.is_valid():
-            obj = form.save(commit=False)
-            obj.user_expense = request.user #zanim formularz zostanie zapisany w bazie musi zawierać nazwę użytkownika
-            obj.save()
-    return redirect('/app')
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = ExpenseDetails(request.POST, request.FILES)
+            if form.is_valid():
+                obj = form.save(commit=False)
+                obj.user_expense = request.user #zanim formularz zostanie zapisany w bazie musi zawierać nazwę użytkownika
+                obj.save()
+        return redirect('/app')
+    else:
+        return HttpResponseRedirect('login')
 
 def logout_view(request):   #wylogowanie
     logout(request)
@@ -87,7 +93,6 @@ def sign_up(request):   #rejestracja nowego użytkownika
             return HttpResponseRedirect('app')
         else:
             for msg in form.error_messages:
-                print(form.error_messages[msg])
                 errors+=form.error_messages[msg]
             return render(request, 'wydatki/error.html', {
             'error_message': errors ,
