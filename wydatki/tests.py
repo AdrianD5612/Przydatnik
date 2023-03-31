@@ -12,6 +12,7 @@ class IndexViewTests(TestCase):
         """
         User.objects.create_user(username='Adrian', password='12345')
         self.client.login(username='Adrian', password='12345')
+    
     def test_no_expenses(self):
         """
         0 wydatków, czy wieświetlone jest 0 zł
@@ -19,6 +20,23 @@ class IndexViewTests(TestCase):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Zostało : <span style="color:blue;">0</span> złotych</h3>')
+
+    def test_anonymous(self):
+        """
+        anonimowy powinien zostać przekierowany
+        """
+        self.client.logout()
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 302) #302 Redirection_FOUND
+
+class Add_ItemViewTests(TestCase):
+    def setUp(self):
+        """
+        utworzenie i zalogowanie testowego użytkownika
+        """
+        User.objects.create_user(username='Adrian', password='12345')
+        self.client.login(username='Adrian', password='12345')
+
     def test_new_expense(self):
         """
         dodanie i wyświetlenie wydatku
@@ -30,6 +48,7 @@ class IndexViewTests(TestCase):
         response = self.client.get(reverse('index'))
         self.assertContains(response, testname)
         self.assertContains(response, testcost)
+
     def test_more_expenses(self):
         """
         3 wydatki i sprawdzenie sum
@@ -41,10 +60,3 @@ class IndexViewTests(TestCase):
         self.assertContains(response, 'Twój całkowity budżet to: <span style="color:green;">30')    #budżet
         self.assertContains(response, 'Wydałeś w sumie : <span style="color:red;">20')  #wydałeś
         self.assertContains(response, 'Zostało : <span style="color:blue;">10') #zostało
-    def test_anonymous(self):
-        """
-        anonimowy powinien zostać przekierowany
-        """
-        self.client.logout()
-        response = self.client.get(reverse('index'))
-        self.assertEqual(response.status_code, 302) #302 Redirection_FOUND

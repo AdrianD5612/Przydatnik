@@ -93,7 +93,6 @@ def sign_up(request):   #rejestracja nowego użytkownika
             return HttpResponseRedirect('app')
         else:
             for msg in form.error_messages:
-                print(form.error_messages[msg])
                 errors+=form.error_messages[msg]
             return render(request, 'wydatki/error.html', {
             'error_message': errors ,
