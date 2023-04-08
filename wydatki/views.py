@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse, FileResponse, HttpResponseForbidden, HttpResponseNotFound
 from .models import ExpenseInfo, Theme  
 from django.contrib.auth import logout,login,authenticate
 from django.contrib.auth.models import User
@@ -123,3 +123,18 @@ def theme(request): #wybranie motywu
             user2=Theme(user_theme=request.user, mode='white')
             user2.save()
     return redirect('/app')
+
+def get_media(request,file):
+    if request.user.is_authenticated:
+        try:
+            media_to_get=ExpenseInfo.objects.get(image='images/'+file)
+        except ExpenseInfo.DoesNotExist:    #obrazek nie istnieje
+            return HttpResponseNotFound()
+        if media_to_get.user_expense==request.user or settings.SHARED_MODE: #jeśli użytkownik jest właścicielem LUB jest tryb wspólnych wydatków
+            img = open('media/images/'+file, 'rb')
+            response = FileResponse(img)
+        else:
+            response = HttpResponseForbidden()
+    else:
+        response = HttpResponseForbidden()
+    return response

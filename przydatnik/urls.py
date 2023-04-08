@@ -17,10 +17,12 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+from wydatki import views
 
 urlpatterns = [
     path('ankiety/', include('ankiety.urls')),
     path('admin/', admin.site.urls),
     path('',include('wydatki.urls')),
-    path('notatki/',include('notatki.urls'))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('notatki/',include('notatki.urls')),
+    path('media/images/<str:file>',views.get_media,name="get_media")    #walidacja przed wysłaniem obrazka
+]
