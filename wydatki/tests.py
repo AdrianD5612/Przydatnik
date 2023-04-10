@@ -83,3 +83,23 @@ class Sign_UpViewTests(TestCase):
         else:
             response = self.client.post(reverse('sign up'), {'username':  username, 'password': password, 'Confirm password': password})
             self.assertContains(response,'Rejestracja jest zamknięta. Skontaktuj się z administratorem w celu utworzenia nowego konta.')
+
+class ThemeViewTests(TestCase):
+    def setUp(self):
+        """
+        utworzenie i zalogowanie testowego użytkownika
+        """
+        User.objects.create_user(username='Adrian', password='12345')
+        self.client.login(username='Adrian', password='12345')
+    def test_theme(self):
+        """
+        zmiana motywu na jasny,ciemny
+        """
+        mode='white'
+        response = self.client.get('/theme', data={'mode': mode})
+        response = self.client.get('/app')
+        self.assertContains(response, 'whitestyle.css')
+        mode='dark'
+        response = self.client.get('/theme', data={'mode': mode})
+        response = self.client.get('/app')
+        self.assertContains(response, 'darkstyle.css')
