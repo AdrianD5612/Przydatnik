@@ -84,22 +84,25 @@ def custom_login(request):
 
 
 def sign_up(request):   #rejestracja nowego użytkownika
-    errors=''
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user=form.save()
-            login(request,user)
-            return HttpResponseRedirect('app')
+    if settings.ALLOW_REGISTRATION: #czy włączona jest możliwość rejestracji
+        errors=''
+        if request.method == 'POST':
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                user=form.save()
+                login(request,user)
+                return HttpResponseRedirect('app')
+            else:
+                for msg in form.error_messages:
+                    errors+=form.error_messages[msg]
+                return render(request, 'wydatki/error.html', {
+                'error_message': errors ,
+                })
         else:
-            for msg in form.error_messages:
-                errors+=form.error_messages[msg]
-            return render(request, 'wydatki/error.html', {
-            'error_message': errors ,
-             })
+            form = UserCreationForm
+            return render(request,'wydatki/sign_up.html',{'form':form})
     else:
-        form = UserCreationForm
-        return render(request,'wydatki/sign_up.html',{'form':form}) 
+        return render(request,'wydatki/sign_closed.html')
 
 def theme(request): #wybranie motywu
     mode=request.GET.get('mode')

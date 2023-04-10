@@ -137,3 +137,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # własne ustawienie: tryb łączenia wydatków wszystkich użytkowników w jedność
 SHARED_MODE = True
+
+# własne ustawienie: włączenie publicznego dostępu do rejestracji nowego konta
+ALLOW_REGISTRATION = False

@@ -12,7 +12,8 @@ Aktualnie składa się z następujących modułów:
 **Notatki**: umożliwiają przechowywanie notatek tekstowych, zapisanych indywidualnie jak i publicznie dla wszystkich, które zostaną wyświetlone z formatowaniem Markdown  
   
 Ustawienia dodatkowe:  
-*SHARED_MODE*: działa tylko dla modułu wydatki. Tryb łączenia wydatków wszystkich użytkowników w jedną całość zamiast prowadzenia indywidualnego spisu dla każdego z osobna
+*SHARED_MODE*: działa tylko dla modułu wydatki. Tryb łączenia wydatków wszystkich użytkowników w jedną całość zamiast prowadzenia indywidualnego spisu dla każdego z osobna.  
+*ALLOW_REGISTRATION*: opcja otwierająca możliwość publicznego rejestrowania nowego konta. Po jej wyłączeniu tylko administrator będzie mógł tworzyć nowe konta.
 
 ## Instalacja
 
@@ -20,7 +21,8 @@ Ustawienia dodatkowe:
 2. pip install -r requirements.txt
 3. W głownym katalogu stwórz plik .env
 4. Napisz w .env  
-    SECRET_KEY = 'twój sekretny klucz do Django'
+    SECRET_KEY = 'twój sekretny klucz do Django'  
+    (klucz możesz wygenerować np. na [tej](https://djecrety.ir) stronie)
 5. python manage.py makemigrations
 6. python manage.py migrate
 7. Gotowe. Aby uruchomić lokalny serwer testowy to wykonaj jeszcze:
