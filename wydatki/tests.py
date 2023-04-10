@@ -3,7 +3,7 @@ import datetime
 from .models import ExpenseInfo
 from django.urls import reverse
 from django.contrib.auth.models import User
-
+from django.conf import settings
 
 class IndexViewTests(TestCase):
     def setUp(self):
@@ -60,3 +60,26 @@ class Add_ItemViewTests(TestCase):
         self.assertContains(response, 'Twój całkowity budżet to: <span style="color:green;">30')    #budżet
         self.assertContains(response, 'Wydałeś w sumie : <span style="color:red;">20')  #wydałeś
         self.assertContains(response, 'Zostało : <span style="color:blue;">10') #zostało
+
+class Sign_UpViewTests(TestCase):
+    def test_registration(self):
+        """
+        rejestracja nowego użytkownika
+        """
+        username='PanTestowy'
+        badPassword='1234'
+        password='agHh1478'
+        self.client.login
+        if settings.ALLOW_REGISTRATION:
+            #hasło niezgodne z wymogami
+            response = self.client.post(reverse('sign up'), {'username':  username, 'password1': badPassword, 'password2': badPassword})
+            self.assertContains(response, 'Błąd:')
+            #różne hasła
+            response = self.client.post(reverse('sign up'), {'username':  username, 'password1': password, 'password2': badPassword})
+            self.assertContains(response, 'Błąd:')
+            #prawidłowe dane
+            response = self.client.post(reverse('sign up'), {'username':  username, 'password1': password, 'password2': password})
+            self.assertRedirects(response, '/app', status_code=302, target_status_code=200) 
+        else:
+            response = self.client.post(reverse('sign up'), {'username':  username, 'password': password, 'Confirm password': password})
+            self.assertContains(response,'Rejestracja jest zamknięta. Skontaktuj się z administratorem w celu utworzenia nowego konta.')
