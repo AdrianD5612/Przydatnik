@@ -24,10 +24,15 @@ def detail(request, pk):
     context={'details':details, 'quest':quest, 'mode':mode}
     return render(request,'ankiety/detail.html',context=context)
 
-
-class ResultsView(generic.DetailView):
-    model = Question
-    template_name = 'ankiety/wyniki.html'
+def results(request, pk):
+    details=Choice.objects.filter(question_id=pk)
+    quest=Question.objects.filter(id=pk)
+    quest=quest[0]
+    mode='dark' #domyślny motyw=ciemny
+    if Theme.objects.filter(user_theme=request.user).exists():  #jeśli użytkownik już wybierał motyw
+                mode= Theme.objects.get(user_theme=request.user).mode
+    context={'details':details, 'quest':quest, 'mode':mode}
+    return render(request,'ankiety/wyniki.html',context=context)
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)

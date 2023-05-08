@@ -5,21 +5,24 @@
        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
 
-{% include "navbar.html" %}
-<form action="{% url 'ankiety:vote' quest.id %}" method="post">
-{% csrf_token %}
-<fieldset>
-    <legend><h1>{{ quest.question_text }}</h1></legend>
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-    {% for choice_text in details %}
-        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice_text.id }}">
-        {% if choice_text.votes %}
-            <label for="choice{{ forloop.counter }}" style="background-color:#FF0000"><b>{{ choice_text }}--Wybrano!</b></label><br>
-        {% else %}
-        <label for="choice{{ forloop.counter }}">{{ choice_text }}</label><br>
-        {% endif %}
-    {% endfor %}
-</fieldset>
-<input type="submit" value="Zatwiedź wybór" class="button">
-</form>
-<li><a href="..">Powrót</a></li>
+    <body>
+        {% include "navbar.html" %}
+        <form action="{% url 'ankiety:vote' quest.id %}" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend><h1>{{ quest.question_text }}</h1></legend>
+            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+            {% for choice_text in details %}
+                <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice_text.id }}">
+                {% if choice_text.votes %}
+                    <label for="choice{{ forloop.counter }}" style="background-color:#FF0000"><b>{{ choice_text }}--Wybrano!</b></label><br>
+                {% else %}
+                <label for="choice{{ forloop.counter }}">{{ choice_text }}</label><br>
+                {% endif %}
+            {% endfor %}
+        </fieldset>
+        <input type="submit" value="Zatwiedź wybór" class="button">
+        </form>
+        <li><a href="..">Powrót</a></li>
+    </body>
+</html>

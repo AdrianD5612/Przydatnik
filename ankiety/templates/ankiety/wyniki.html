@@ -1,13 +1,26 @@
-<h1>{{ question.question_text }}</h1>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <title>Szczegóły</title>
+        {% include "includes.html" %}
+       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
 
-<ul>
-{% for choice in question.choice_set.all %}
-    {% if choice.votes %}
-       <li style="background-color:#FF0000"> <b>{{ choice.choice_text }}--Wybrano!</b></li>
-    {% else %}
-        <li>{{ choice.choice_text }}</li>
-    {% endif %}
-{% endfor %}
-</ul>
+    <body>
+        {% include "navbar.html" %}
+        <h1>{{ quest.question_text }}</h1>
 
-<a href="{% url 'ankiety:detail' question.id %}">Zmienić głos?</a>
+        <ul>
+        {% for choice_text in details %}
+            {% if choice_text.votes %}
+            <li style="background-color:#FF0000"> <b>{{ choice_text }}--Wybrano!</b></li>
+            {% else %}
+                <li>{{ choice_text }}</li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+
+        <a href="{% url 'ankiety:detail' quest.id %}">Zmienić głos?</a>
+    </body>
+</html>
