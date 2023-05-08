@@ -1,0 +1,7 @@
+{% load static %}
+{% if mode == "dark" %}
+<link rel="stylesheet" href="{% static 'darkstyle.css' %}">
+{% endif %}
+{% if mode == "white" %}
+<link rel="stylesheet" href="{% static 'whitestyle.css' %}">
+{% endif %}
