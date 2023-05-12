@@ -1,31 +1,20 @@
+{% load static %}
 <html>
     <head>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
         <title>Ankiety</title>
-        
+        {% include "includes.html" %}
        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
 
 
-{% load static %}
 
 
 
-<nav>
-    <div class="nav-wrapper">
-        <ul class="right">
-            <li><a href='{% url "index" %}' class='btn'>Przejdź do wydatków</a></li>
-            <li><a href="../notatki" class='btn'>Przejdź do notatek</a></li>
-            {% if user.is_superuser %}
-                <li><a href="../admin" class='btn'>Przejdź do administrowania</a></li>
-            {% endif %}
-            <li><a href='{% url "logout" %}' class='btn'>Wyloguj({{ user }})</a></li>
-        </ul>
-    </div>
-</nav>
 
-<link rel="stylesheet" href="{% static 'ankiety/style.css' %}">
+{% include "navbar.html" %}
+
+
+
 {% if user.is_authenticated %}
 
     {% if latest_question_list %}

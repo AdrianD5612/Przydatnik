@@ -1,7 +1,9 @@
 from django.db import models, transaction
+from django.db.models import Q
 from django.utils import timezone
 from django.contrib import admin
 import datetime
+
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
@@ -32,5 +34,5 @@ class Choice(models.Model):
             return super(Choice, self).save(*args, **kwargs)
         with transaction.atomic():
             Choice.objects.filter(
-                votes=True).update(votes=False)
+                Q(votes=True) & Q(question=self.question)).update(votes=False)
             return super(Choice, self).save(*args, **kwargs)

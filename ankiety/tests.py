@@ -9,6 +9,12 @@ from .models import Question
 
 
 class QuestionModelTests(TestCase):
+    def setUp(self):
+        """
+        utworzenie i zalogowanie testowego użytkownika
+        """
+        User.objects.create_user(username='Adrian', password='12345')
+        self.client.login(username='Adrian', password='12345')
     def test_was_published_recently_with_future_question(self):
         """
         was_published_recently() zwraca False dla ankiet z pub_date
@@ -43,12 +49,17 @@ def create_question(question_text, days):
     time = timezone.now() + datetime.timedelta(days=days)
     return Question.objects.create(question_text=question_text, pub_date=time)
 
-class QuestionIndexViewTests(TestCase):
+class IndexViewTests(TestCase):
+    def setUp(self):
+        """
+        utworzenie i zalogowanie testowego użytkownika
+        """
+        User.objects.create_user(username='Adrian', password='12345')
+        self.client.login(username='Adrian', password='12345')
     def test_no_questions(self):
         """
         czy jest wyświetlana wiadomość o braku ankiet
         """
-        self.client.force_login(User.objects.get_or_create(username='Adrian')[0])   #zalogowanie jest konieczne do przeglądania ankiet
         response = self.client.get(reverse('ankiety:index'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Nie ma ankiet.")
@@ -69,7 +80,6 @@ class QuestionIndexViewTests(TestCase):
         """
         czy pytania z przyszłości są wyświetlana
         """
-        self.client.force_login(User.objects.get_or_create(username='Adrian')[0])   #zalogowanie jest konieczne do przeglądania ankiet
         create_question(question_text="Przyszłe pytania.", days=30)
         response = self.client.get(reverse('ankiety:index'))
         self.assertContains(response, "Nie ma ankiet.")
@@ -99,7 +109,13 @@ class QuestionIndexViewTests(TestCase):
             [question2, question1],
         )
 
-class QuestionDetailViewTests(TestCase):
+class DetailViewTests(TestCase):
+    def setUp(self):
+        """
+        utworzenie i zalogowanie testowego użytkownika
+        """
+        User.objects.create_user(username='Adrian', password='12345')
+        self.client.login(username='Adrian', password='12345')
     def test_future_question(self):
         """
         czy wyświetlanie ankiety z przyszłości zwraca błąd 404
@@ -117,3 +133,11 @@ class QuestionDetailViewTests(TestCase):
         url = reverse('ankiety:detail', args=(past_question.id,))
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
+
+    def test_not_existing_question(self):
+        """
+        czy wyświetlanie nieistniejącej ankiety zwraca błąd 404
+        """
+        url = reverse('ankiety:detail', args=(99,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
