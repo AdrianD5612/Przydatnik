@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
@@ -17,22 +17,34 @@ def index(request):
 def detail(request, pk):
     details=Choice.objects.filter(question_id=pk)
     quest=Question.objects.filter(id=pk)
-    quest=quest[0]
-    mode='dark' #domyślny motyw=ciemny
-    if Theme.objects.filter(user_theme=request.user).exists():  #jeśli użytkownik już wybierał motyw
-                mode= Theme.objects.get(user_theme=request.user).mode
-    context={'details':details, 'quest':quest, 'mode':mode}
-    return render(request,'ankiety/detail.html',context=context)
+    if not quest: #ankieta nie istnieje
+         return HttpResponseNotFound()
+    else:
+        quest=quest[0]
+        if quest.pub_date<=timezone.now():
+            mode='dark' #domyślny motyw=ciemny
+            if Theme.objects.filter(user_theme=request.user).exists():  #jeśli użytkownik już wybierał motyw
+                        mode= Theme.objects.get(user_theme=request.user).mode
+            context={'details':details, 'quest':quest, 'mode':mode}
+            return render(request,'ankiety/detail.html',context=context)
+        else:
+            return HttpResponseNotFound()
 
 def results(request, pk):
     details=Choice.objects.filter(question_id=pk)
     quest=Question.objects.filter(id=pk)
-    quest=quest[0]
-    mode='dark' #domyślny motyw=ciemny
-    if Theme.objects.filter(user_theme=request.user).exists():  #jeśli użytkownik już wybierał motyw
-                mode= Theme.objects.get(user_theme=request.user).mode
-    context={'details':details, 'quest':quest, 'mode':mode}
-    return render(request,'ankiety/wyniki.html',context=context)
+    if not quest: #ankieta nie istnieje
+        return HttpResponseNotFound()
+    else:
+        quest=quest[0]
+        if quest.pub_date<=timezone.now():
+            mode='dark' #domyślny motyw=ciemny
+            if Theme.objects.filter(user_theme=request.user).exists():  #jeśli użytkownik już wybierał motyw
+                        mode= Theme.objects.get(user_theme=request.user).mode
+            context={'details':details, 'quest':quest, 'mode':mode}
+            return render(request,'ankiety/wyniki.html',context=context)
+        else:
+            return HttpResponseNotFound()
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
