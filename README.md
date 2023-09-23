@@ -1,35 +1,39 @@
 # Przydatnik
 
-Aplikacja w formie strony internetowej działającej na frameworku **Django(Python)**, umożliwiająca zapisywanie wydatków, notatek i ankiet, które można w określony sposób dzielić z innymi użytkownikami, np. domownikami.
-Aktualnie składa się z następujących modułów:
+[![en](https://img.shields.io/badge/lang-pl-green.svg)](https://github.com/AdrianD5612/Przydatnik/blob/main/README.pl.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-1. Ankiety
-2. Wydatki
-3. Notatki
+## Description
 
-**Ankiety**: Umożliwiają zadanie pytania z wieloma odpowiedziami do użytkownika.  
-**Wydatki**: Umożliwiają notowanie historii kosztów oraz wpływów do wspólnego budżetu. Budżet można też ustawić jako indywidualny dla każdego z użytkowników.  
-**Notatki**: Umożliwiają przechowywanie notatek tekstowych, zapisanych indywidualnie jak i publicznie dla wszystkich. Wspierają formatowanie Markdown.  
-  
-Ustawienia dodatkowe:  
-*SHARED_MODE*: Działa tylko dla modułu wydatki. Tryb łączenia wydatków wszystkich użytkowników w jedną całość zamiast prowadzenia indywidualnego spisu dla każdego z osobna.  
-*ALLOW_REGISTRATION*: Opcja otwierająca możliwość publicznego rejestrowania nowego konta. Po jej wyłączeniu tylko administrator będzie mógł tworzyć nowe konta.
+An application in the form of a web page, running on the **Django (Python)** framework, allowing the recording of expenses, notes, and surveys that can be shared with other users, such as household members. Currently, it consists of the following modules:
 
-## Instalacja
+1. Surveys
+2. Expenses
+3. Notes
 
-1. Sklonuj to repozytorium  
-2. pip install -r requirements.txt
-3. W głownym katalogu stwórz plik .env
-4. Napisz w .env  
-    SECRET_KEY = 'twój sekretny klucz do Django'  
-    (klucz możesz wygenerować np. na [tej](https://djecrety.ir) stronie)
-5. python manage.py makemigrations
-6. python manage.py migrate
-7. Gotowe. Aby uruchomić lokalny serwer testowy to wykonaj jeszcze:
-8. python manage.py runserver
+**Surveys**: Allows you to ask questions with multiple answers.  
+**Expenses**: Allows recording the history of expenses and income in a shared budget. The budget can also be set individually for each user.  
+**Notes**: Allows you to store text notes, saved individually or publicly for everyone. They support Markdown formatting.
+
+Additional settings:  
+*SHARED_MODE*: Only works for the expenses module. It combines the expenses of all users into one common record instead of maintaining an individual list for each person.  
+*ALLOW_REGISTRATION*: An option that allows public registration of new accounts. When turned off, only the administrator can create new accounts.
+
+## Installation
+
+1. Clone this repository.
+2. Run `pip install -r requirements.txt`.
+3. In the main directory, create a `.env` file.
+4. In the `.env` file, write:  
+   SECRET_KEY = 'your Django secret key'`  
+   (You can generate the key, for example, on [this](https://djecrety.ir) website.)
+5. Run `python manage.py makemigrations`.
+6. Run `python manage.py migrate`.
+7. You're done. To run the local test server:
+8. Run `python manage.py runserver`.
 
 ___
-Wykorzystano następujące samouczki:  
+The following tutorials were used:
 [Writing your first Django app](https://docs.djangoproject.com/en/4.1/intro/tutorial01)  
 [Creating a Budget Web App with Django](https://kristian-roopnarine.medium.com/creating-a-budget-web-app-with-django-655369b6d43c)  
 [Django Image Upload](https://www.javatpoint.com/django-image-upload)
