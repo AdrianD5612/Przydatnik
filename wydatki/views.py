@@ -50,10 +50,21 @@ def index(request): #generowanie strony głównej wydatków
             plt.savefig('wydatki/static/wydatki/expense.jpg')
         except TypeError:
             pass    #błąd w przypadku braku wpisów, nie trzeba reagować
+        #obliczenie kolumny "Pozostałe saldo"
+        if settings.SHARED_MODE:
+            total_items = ExpenseInfo.objects.order_by('date_added')
+        else:
+            total_items = ExpenseInfo.objects.filter(user_expense=request.user).order_by('date_added')
+        total_entries=[]
+        new_total=0
+        for expense in  total_items:
+            new_total=new_total+expense.cost
+            total_entries.append(new_total)
+        total_entries.reverse()
         if expense_total['expenses']: #przekazanie wpisów oraz sumy do statystyk
-            context = {'expense_items':expense_items,'budget':round(budget_total['budget'],2),'expenses':round(abs(expense_total['expenses']),2), 'remaining':round((budget_total['budget']-abs(expense_total['expenses'])),2)}
+            context = {'expense_items':expense_items,'total_entries':total_entries,'budget':round(budget_total['budget'],2),'expenses':round(abs(expense_total['expenses']),2),'remaining':round((budget_total['budget']-abs(expense_total['expenses'])),2)}
         else:   #naprawia błąd w przypadku braku wpisów
-            context = {'expense_items':expense_items,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':0 }
+            context = {'expense_items':expense_items,'total_entries':total_entries,'budget':budget_total['budget'],'expenses':(expense_total['expenses']), 'remaining':0 }
         context['form']= ExpenseDetails()
         context['mode']=mode
         return render(request,'wydatki/index.html',context=context)
