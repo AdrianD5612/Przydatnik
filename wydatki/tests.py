@@ -60,6 +60,7 @@ class Add_ItemViewTests(TestCase):
         self.assertContains(response, 'Twój całkowity budżet to: <span style="color:green;">30')    #budżet
         self.assertContains(response, 'Wydałeś w sumie : <span style="color:red;">20')  #wydałeś
         self.assertContains(response, 'Zostało : <span style="color:blue;">10') #zostało
+        self.assertContains(response, '<td>0,00</td>') #jedno pozostałe saldo powinno mieć daną wartość
 
 class Sign_UpViewTests(TestCase):
     def test_registration(self):
