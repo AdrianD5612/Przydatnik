@@ -11,6 +11,7 @@ from django.db.models import Q
 from wydatki.forms import ExpenseDetails  
 import math
 from django.conf import settings
+import sharedfunctions
 
 def index(request): #generowanie strony głównej wydatków
     if request.user.is_authenticated:
@@ -112,29 +113,6 @@ def sign_up(request):   #rejestracja nowego użytkownika
     else:
         return render(request,'wydatki/sign_closed.html')
 
-def theme(request): #wybranie motywu
-    mode=request.GET.get('mode')
-
-    if mode=='dark':
-        if Theme.objects.filter(user_theme=request.user).exists():
-            user_saving= Theme.objects.get(user_theme=request.user)
-            user_saving.user_theme=request.user
-            user_saving.mode='dark'
-            user_saving.save()
-        else:
-            user2=Theme(user_theme=request.user, mode='dark')
-            user2.save()
-    elif mode=='white':
-        if Theme.objects.filter(user_theme=request.user).exists():
-            user_saving= Theme.objects.get(user_theme=request.user)
-            user_saving.user_theme=request.user
-            user_saving.mode='white'
-            user_saving.save()
-        else:
-            user2=Theme(user_theme=request.user, mode='white')
-            user2.save()
-    return redirect('/app')
-
 def get_media(request,file):
     if request.user.is_authenticated:
         try:
@@ -149,3 +127,7 @@ def get_media(request,file):
     else:
         response = HttpResponseForbidden()
     return response
+
+def theme(request): #wybranie motywu
+    sharedfunctions.theme(request)
+    return redirect('/app')
