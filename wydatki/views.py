@@ -51,10 +51,7 @@ def index(request): #generowanie strony głównej wydatków
         except TypeError:
             pass    #błąd w przypadku braku wpisów, nie trzeba reagować
         #obliczenie kolumny "Pozostałe saldo"
-        if settings.SHARED_MODE:
-            total_items = ExpenseInfo.objects.order_by('date_added')
-        else:
-            total_items = ExpenseInfo.objects.filter(user_expense=request.user).order_by('date_added')
+        total_items=reversed(list(expense_items))
         total_entries=[]
         new_total=0
         for expense in  total_items:
